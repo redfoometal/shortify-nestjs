@@ -26,6 +26,20 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+## Docker run
+
+```bash
+$ bash start_container.sh
+```
+or сreate a .env file based on .env.example and run it via Docker Compose.
+```bash
+$ docker compose up -d
+```
+
+## Fronted client
+Start project and you need to follow the path /client/index.html    
+default path - http:localhost:4000/client/index.html
+
 ## Project setup
 
 ```bash
