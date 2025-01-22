@@ -16,11 +16,7 @@ import { isDev } from 'src/libs/common/is-dev-util';
                 password: configService.get('POSTGRES_PASSWORD'),
                 database: configService.get('POSTGRES_DATABASE'),
                 entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-                synchronize: isDev(configService),
-                migrations: [__dirname + '/src/migrations/*{.ts,.js}'],
-                cli: {
-                    migrationsDir: 'src/migrations', // Убедитесь, что каталог существует
-                },
+                synchronize: true, // change prodation to false
             }),
             inject: [ConfigService],
         }),

@@ -5,7 +5,7 @@ services:
         build:
             context: .
             dockerfile: Dockerfile
-            target: ${NODE_ENV}
+            target: production
         env_file:
             - .env
         ports:
