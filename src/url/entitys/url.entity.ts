@@ -1,7 +1,7 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import { AnalyticsEntity } from 'src/analytics/entitys/analytics.entity';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('urls')
-@Unique(['shortUrl', 'alias'])
 export class UrlEntity {
     @PrimaryGeneratedColumn()
     id: number;
@@ -9,18 +9,15 @@ export class UrlEntity {
     @Column({ name: 'original_url' })
     originalUrl: string;
 
-    @Column({ name: 'short_url', length: 6, unique: true })
+    @Column({ name: 'short_url', length: 20, unique: true })
     shortUrl: string;
 
-    @Column({ name: 'alias', length: 20, nullable: true })
-    alias: string;
-
-    @Column({ name: 'expires_at', nullable: true })
+    @Column({ type: 'timestamptz', name: 'expires_at', nullable: true })
     expiresAt: Date;
-
-    @Column({ name: 'click_count', default: 0 })
-    clickCount: number;
 
     @CreateDateColumn({ name: 'created_at' })
     createdAt: Date;
+
+    @OneToMany(() => AnalyticsEntity, (analytics) => analytics.urlId)
+    analytics: AnalyticsEntity[];
 }

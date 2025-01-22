@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>URL Shortener</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      padding: 0;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    label {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    input, select, button {
+      margin-top: 5px;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #result {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    #short-link {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>URL Shortener</h1>
+  <form id="shorten-form">
+    <label for="original-url">Original URL:</label>
+    <input type="url" id="original-url" name="originalUrl" placeholder="Enter original URL" required>
+    
+    <label for="alias">Alias (optional, max 20 characters):</label>
+    <input type="text" id="alias" name="alias" maxlength="20" placeholder="Enter custom alias">
+
+    <label for="expires-at">Expiration:</label>
+    <select id="expires-at" name="expiresAt">
+      <option value="">Без срока</option>
+      <option value="1 hour">1 час</option>
+      <option value="2 hours">2 часа</option>
+      <option value="8 hours">8 часов</option>
+      <option value="1 day">1 день</option>
+    </select>
+    
+    <button type="submit">Generate Short Link</button>
+  </form>
+
+  <div id="result" style="margin-top: 20px;">
+    <h2>Shortened Link:</h2>
+    <p id="short-link"></p>
+  </div>
+
+  <script>
+    document.getElementById('shorten-form').addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const originalUrl = document.getElementById('original-url').value;
+      const alias = document.getElementById('alias').value;
+      const expiresAt = document.getElementById('expires-at').value;
+      
+      // Преобразуем срок в правильный формат, если выбран
+      let expiresAtDate = null;
+      if (expiresAt) {
+        const now = new Date();
+        switch (expiresAt) {
+          case '1 hour':
+            now.setHours(now.getHours() + 1);
+            break;
+          case '2 hours':
+            now.setHours(now.getHours() + 2);
+            break;
+          case '8 hours':
+            now.setHours(now.getHours() + 8);
+            break;
+          case '1 day':
+            now.setDate(now.getDate() + 1);
+            break;
+        }
+        expiresAtDate = now.toISOString();
+      }
+
+      const apiUrl = '/shorten'; // Замените на ваш реальный API URL
+
+      try {
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ originalUrl, alias, expiresAt: expiresAtDate }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to generate short link');
+        }
+
+        const data = await response.json();
+        document.getElementById('short-link').textContent = `${window.location.origin}/${data.alias || data.shortUrl}`;
+      } catch (error) {
+        document.getElementById('short-link').textContent = `Error: ${error.message}`;
+      }
+    });
+  </script>
+</body>
+</html>

@@ -4,11 +4,12 @@ import { UrlController } from './url.controller';
 import { UrlRepository } from './url.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UrlEntity } from './entitys/url.entity';
-import { ShortUrlSequenceEntity } from './entitys/short-url-sequence.entity';
+import { AnalyticsService } from 'src/analytics/analytics.service';
+import { AnalyticsModule } from 'src/analytics/analytics.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UrlEntity, ShortUrlSequenceEntity])],
-  controllers: [UrlController],
-  providers: [UrlService, UrlRepository],
+    imports: [TypeOrmModule.forFeature([UrlEntity]), AnalyticsModule],
+    controllers: [UrlController],
+    providers: [UrlService, UrlRepository, AnalyticsService],
 })
 export class UrlModule {}
